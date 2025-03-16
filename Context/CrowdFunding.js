@@ -32,7 +32,7 @@ export const CrowdFundingProvider = ({children}) => {
         console.log(currentAccount);
 
         try{
-            const transaction = await ConstructorFragment.createCmapaign(
+            const transaction = await contract.createCampaign(
                 currentAccount,
                 title,
                 description,
@@ -56,8 +56,8 @@ export const CrowdFundingProvider = ({children}) => {
         const contract = fetchContract(provider);
 
         const campaigns = await contract.getCampaigns();
-
-        const parsedCampaigns = campaigns.map((campaign) => ({
+        // console.log(campaigns);
+        const parsedCampaigns = campaigns.map((campaign,i) => ({
             owner: campaign.owner,
             title: campaign.title,
             description: campaign.description,
@@ -66,7 +66,7 @@ export const CrowdFundingProvider = ({children}) => {
             amountCollected: ethers.utils.formatEther(campaign.amountCollected.toString()),
             pId: i,
         }));
-
+        // console.log(parsedCampaigns);
         return parsedCampaigns;
     };
 
@@ -74,15 +74,15 @@ export const CrowdFundingProvider = ({children}) => {
      * Get campaigns created by the current user.
      * @returns {Array} - An array of campaign objects created by the current user.
      */
-    const getuserCampaigns = async() => {
+    const getUserCampaigns = async() => {
         const provider = new ethers.providers.JsonRpcProvider();
         const contract = fetchContract(provider);
 
-        const allCampoaigns = await contract.getCampaigns();
+        const allCampaigns = await contract.getCampaigns();
         const accounts = await window.ethereum.request({method: "eth_accounts"});
         const currentUser = accounts[0];
 
-        const filteredCampaigns = allCampoaigns.filter((campaign) => campaign.owner === "Oxf39Fd6e51aad88F6F4ce6aB8827279cffFb92266");
+        const filteredCampaigns = allCampaigns.filter((campaign) => campaign.owner === "Oxf39Fd6e51aad88F6F4ce6aB8827279cffFb92266");
 
         const userData = filteredCampaigns.map((campaign,i) => ({
             owner: campaign.owner,
@@ -129,7 +129,7 @@ export const CrowdFundingProvider = ({children}) => {
         const provider = new ethers.providers.JsonRpcProvider();
         const contract = fetchContract(provider);
 
-        const donations = await contract.getDonations(pId);
+        const donations = await contract.getDonors(pId);
         const numberOfDonations = donations[0].length;
 
         const parsedDonations = [];
@@ -154,7 +154,7 @@ export const CrowdFundingProvider = ({children}) => {
                 return setOpenError(true), setError("Please install MetaMask");
             }
 
-            const acounts = await window.ethereum.request({
+            const accounts = await window.ethereum.request({
                 method: "eth_accounts",
             });
 
@@ -198,7 +198,7 @@ export const CrowdFundingProvider = ({children}) => {
             currentAccount,
             createCampaign,
             getCampaigns,
-            getuserCampaigns,
+            getUserCampaigns,
             donate,
             getDonations,
             connectWallet,

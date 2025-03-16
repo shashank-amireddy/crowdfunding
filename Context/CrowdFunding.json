@@ -101,7 +101,7 @@
     },
     {
       "inputs": [],
-      "name": "getCampaign",
+      "name": "getCampaigns",
       "outputs": [
         {
           "components": [
